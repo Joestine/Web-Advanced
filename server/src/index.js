@@ -5,6 +5,7 @@ import auth from "./routes/auth.js";
 import users from "./routes/users.js";
 import animals from "./routes/animals.js";
 import auctions from "./routes/auctions.js";
+import {init} from "./data.js";
 
 const app = express();
 const port = 3000;
@@ -22,6 +23,8 @@ app.get("/", (req, res) => {
     // res.send('Hello World!')
     res.json({msg: "hello world"});
 });
+
+init();
 
 app.listen(port, () => {
     console.log("[SYSTEM]: Server is running on port " + port + "...");

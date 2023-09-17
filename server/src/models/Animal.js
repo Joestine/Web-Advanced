@@ -1,5 +1,7 @@
-class Animal {
-    constructor(name, species, group, region, age, gender, description) {
+import {animals} from "../data.js";
+
+export default class Animal {
+    constructor(name, species, group, region, age, gender, description, ownerId) {
         this.name = name;
         this.species = species;
         this.group = group;
@@ -7,5 +9,7 @@ class Animal {
         this.age = age;
         this.gender = gender;
         this.description = description;
+        this.ownerId = ownerId;
+        this.id = animals.length;
     }
 }

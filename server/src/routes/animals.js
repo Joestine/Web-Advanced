@@ -17,10 +17,6 @@ router.get("/", async (req, res) => {
     res.json(animals);
 });
 
-router.get("/:id", async (req, res) => {
-     res.json(controller.getAnimalById(req.params.id));
-});
-
 router.get("/regions", async (req, res) => {
     res.json(controller.getAllRegions());
 });
@@ -28,6 +24,11 @@ router.get("/regions", async (req, res) => {
 router.get("/groups", async (req, res) => {
     res.json(controller.getAllGroups());
 });
+
+router.get("/:id", async (req, res) => {
+     res.json(controller.getAnimalById(req.params.id));
+});
+
 
 router.post("/", async (req, res) => {
     res.json(controller.createAnimal(req.body));

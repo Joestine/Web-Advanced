@@ -1,3 +1,5 @@
+import User from "./User.js";
+
 export default class Buyer extends User {
     constructor(
         firstname,

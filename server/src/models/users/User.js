@@ -1,3 +1,5 @@
+import {users} from "../../data.js";
+
 export default class User {
 	constructor(
 		firstname,
@@ -21,6 +23,7 @@ export default class User {
 		this.postal = postal;
 		this.email = email;
 		this.password = password;
+		id = users.length;
 	}
 }
 
