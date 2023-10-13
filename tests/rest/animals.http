@@ -1,0 +1,70 @@
+### Get all animals
+GET {{protocol}}{{host}}:{{port}}/api/animals
+
+> {%
+client.test("Status code is 200", function() {
+    client.assert(response.status === 200, "Response status is not 200");
+});
+%}
+
+### Get animals filtered by species
+GET {{protocol}}{{host}}:{{port}}/api/animals?species=Aap
+
+> {%
+client.test("Status code is 200", function() {
+    client.assert(response.status === 200, "Response status is not 200");
+});
+%}
+
+### Get animals filtered by group
+GET {{protocol}}{{host}}:{{port}}/animals?group=Mammals
+
+### Get animals filtered by region
+GET {{protocol}}{{host}}:{{port}}/animals?region=Africa
+
+### Get animals filtered by age
+GET {{protocol}}{{host}}:{{port}}/animals?age=5
+
+### Get animals filtered by gender
+GET {{protocol}}{{host}}:{{port}}/animals?gender=Male
+
+### Get animals filtered by owner
+GET {{protocol}}{{host}}:{{port}}/animals?ownerId=123
+
+### Get all regions
+GET {{protocol}}{{host}}:{{port}}/animals/regions
+
+### Get all groups
+GET {{protocol}}{{host}}:{{port}}/animals/groups
+
+### Get animal by id
+GET {{protocol}}{{host}}:{{port}}/animals/1
+
+### Create a new animal
+POST {{protocol}}{{host}}:{{port}}/animals
+Content-Type: application/json
+
+{
+  "species": "Tiger",
+  "group": "Mammals",
+  "region": "Asia",
+  "age": 3,
+  "gender": "Female",
+  "ownerId": 456
+}
+
+### Update an existing animal
+PUT {{protocol}}{{host}}:{{port}}/animals/1
+Content-Type: application/json
+
+{
+  "species": "Lion",
+  "group": "Mammals",
+  "region": "Africa",
+  "age": 5,
+  "gender": "Male",
+  "ownerId": 789
+}
+
+### Delete an existing animal
+DELETE {{protocol}}{{host}}:{{port}}/animals/1

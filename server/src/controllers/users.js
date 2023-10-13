@@ -1,9 +1,5 @@
-import User from "../models/users/User.js";
-import fs from "fs";
-import {users} from "../data.js";
-import Seller from "../models/users/Seller.js";
-import Buyer from "../models/users/Buyer.js";
-import Admin from "../models/users/Admin.js";
+import { users } from "../data.js";
+import User from "../models/User.js";
 
 export function getAllUsers() {
 	console.log("[SYSTEM]: Returning all users...");
@@ -12,29 +8,63 @@ export function getAllUsers() {
 
 export function getUserById(id) {
 	console.log("[SYSTEM]: Returning user with id " + id + "...");
+	if (id < 0 || id >= users.length) {
+		throw new Error("[ERROR] Invalid user ID");
+	}
 	return users[id];
 }
 
 export function filterUsersByRole(role) {
 	console.log("[SYSTEM]: Filtering all users with role " + role + "...");
+	if (typeof role !== "string") {
+		throw new Error("[ERROR] Invalid role");
+	}
 	switch (role) {
-		case "seller": return users.filter(user => user instanceof Seller);
-		case "buyer": return users.filter(user => user instanceof Buyer);
-		case "admin": return users.filter(user => user instanceof Admin);
+		case "seller":
+			return users.filter((user) => user.role === "seller");
+		case "buyer":
+			return users.filter((user) => user.role === "buyer");
+		case "admin":
+			return users.filter((user) => user.role === "admin");
+		default:
+			throw new Error("[ERROR] Invalid role");
 	}
 }
 
 export function createUser(user) {
 	console.log("[SYSTEM]: Creating user...");
-	users.push(user);
+	let newUser;
+
+	try {
+		newUser = new User(user);
+	} catch (error) {
+		throw new Error("[ERROR] Invalid user object");
+	}
+
+	users.push(newUser);
+	return newUser;
 }
 
 export function updateUser(id, user) {
 	console.log("[SYSTEM]: Updating user with id " + id + "...");
-	users.find(user => user.id === id).update(user);
+	if (id < 0 || id >= users.length) {
+		throw new Error("[ERROR] Invalid user ID");
+	}
+
+	const updatedUser = new User(user);
+
+	if (!updatedUser.isValid()) {
+		throw new Error("[ERROR] Invalid user object");
+	}
+
+	users[id] = updatedUser;
+	return updatedUser;
 }
 
 export function deleteUser(id) {
 	console.log("[SYSTEM]: Deleting user with id " + id + "...");
+	if (id < 0 || id >= users.length) {
+		throw new Error("[ERROR] Invalid user ID");
+	}
 	users.splice(id, 1);
 }
