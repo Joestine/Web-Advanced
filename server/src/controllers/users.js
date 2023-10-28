@@ -20,10 +20,8 @@ export function filterUsersByRole(role) {
 		throw new Error("[ERROR] Invalid role");
 	}
 	switch (role) {
-		case "seller":
-			return users.filter((user) => user.role === "seller");
-		case "buyer":
-			return users.filter((user) => user.role === "buyer");
+		case "user":
+			return users.filter((user) => user.role === "user");
 		case "admin":
 			return users.filter((user) => user.role === "admin");
 		default:

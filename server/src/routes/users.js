@@ -1,10 +1,12 @@
 import escape from "escape-html";
 import express from "express";
 import * as controller from "../controllers/users.js";
+import isAdmin from "../middleware/isAdmin.js";
+import isLoggedIn from "../middleware/isLoggedIn.js";
 
 const router = express.Router();
 
-router.get("/", async (req, res) => {
+router.get("/", [isLoggedIn, isAdmin], async (req, res) => {
 	try {
 		const role = req.query.role;
 		let users = controller.getAllUsers();
@@ -21,13 +23,17 @@ router.get("/", async (req, res) => {
 	}
 });
 
-router.get("/:id", async (req, res) => {
+router.get("/:id", isLoggedIn, async (req, res) => {
 	try {
-		const user = controller.getUserById(req.params.id);
-		if (!user) {
-			res.status(404).json({ error: escape("User not found") });
+		if (req.params.id !== req.user.id && req.user.role !== "admin") {
+			res.status(403).json({ error: escape("Forbidden") });
 		} else {
-			res.status(200).json(user);
+			const user = controller.getUserById(req.params.id);
+			if (!user) {
+				res.status(404).json({ error: escape("User not found") });
+			} else {
+				res.status(200).json(user);
+			}
 		}
 	} catch (error) {
 		res.status(400).json({ error: escape(error.message) });
@@ -43,7 +49,7 @@ router.post("/", async (req, res) => {
 	}
 });
 
-router.put("/:id", async (req, res) => {
+router.put("/:id", [isLoggedIn, isAdmin], async (req, res) => {
 	try {
 		const user = controller.updateUser(req.params.id, req.body);
 		res.status(200).json(user);
@@ -52,7 +58,7 @@ router.put("/:id", async (req, res) => {
 	}
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", [isLoggedIn, isAdmin], async (req, res) => {
 	try {
 		const user = controller.deleteUser(req.params.id);
 		res.status(200).json(user);

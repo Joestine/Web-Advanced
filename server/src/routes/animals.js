@@ -1,10 +1,12 @@
 import escape from "escape-html";
 import express from "express";
 import * as controller from "../controllers/animals.js";
+import isLoggedIn from "../middleware/isLoggedIn.js";
+import isUser from "../middleware/isUser.js";
 
 const router = express.Router();
 
-router.get("/", async (req, res) => {
+router.get("/", isLoggedIn, async (req, res) => {
 	try {
 		let animals = controller.getAllAnimals();
 		const { species, group, region, age, gender, ownerId } = req.query;
@@ -52,20 +54,24 @@ router.get("/groups", async (req, res) => {
 	}
 });
 
-router.get("/:id", async (req, res) => {
+router.get("/:id", isLoggedIn, async (req, res) => {
 	try {
 		const animal = controller.getAnimalById(req.params.id);
 		if (!animal) {
 			res.status(404).json({ error: escape("Animal not found") });
 		} else {
-			res.status(200).json(animal);
+			if (animal.ownerId !== req.user.id) {
+				res.status(403).json({ error: escape("You are not authorized to access this animal") });
+			} else {
+				res.status(200).json(animal);
+			}
 		}
 	} catch (error) {
 		res.status(400).json({ error: escape(error.message) });
 	}
 });
 
-router.post("/", async (req, res) => {
+router.post("/", [isLoggedIn, isUser], async (req, res) => {
 	try {
 		const animal = controller.createAnimal(req.body);
 		res.status(201).json(animal);
@@ -74,16 +80,24 @@ router.post("/", async (req, res) => {
 	}
 });
 
-router.put("/:id", async (req, res) => {
+router.put("/:id", isLoggedIn, async (req, res) => {
 	try {
 		const updatedAnimal = controller.updateAnimal(req.params.id, req.body);
-		res.status(200).json(updatedAnimal);
+		if (!updatedAnimal) {
+			res.status(404).json({ error: escape("Animal not found") });
+		} else {
+			if (updatedAnimal.ownerId !== req.user.id) {
+				res.status(403).json({ error: escape("You are not authorized to update this animal") });
+			} else {
+				res.status(200).json(updatedAnimal);
+			}
+		}
 	} catch (error) {
 		res.status(400).json({ error: escape(error.message) });
 	}
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", isLoggedIn, async (req, res) => {
 	try {
 		controller.deleteAnimal(req.params.id);
 		res.status(202).json({ message: escape("Animal deleted successfully") });

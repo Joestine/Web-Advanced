@@ -1,12 +1,22 @@
 import express from "express";
+import { users } from "../data.js";
 const router = express.Router();
 
+import dotenv from "dotenv";
+import jwt from "jsonwebtoken";
+
+dotenv.config();
+
 router.post("/", async (req, res) => {
-	// @todo check the credentials and return an appropriate response
-	// For testing purposes a dummy token is returned.
-	res.json({
-		token: "dummyt0k3nv4lu3!",
-	});
+	const { email, password } = req.body;
+	const user = users.find((user) => user.verify(email, password));
+
+	if (!user) {
+		return res.status(401).json({ message: "Invalid credentials" });
+	}
+	const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET);
+
+	res.json({ token });
 });
 
 export default router;

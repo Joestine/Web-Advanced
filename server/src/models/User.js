@@ -27,10 +27,8 @@ export default class User {
 		this.postal = postal;
 		this.email = email;
 		this.password = bcrypt.hashSync(password, 10);
-		this.id = users.length + 1;
+		this.id = users.length;
 		this.role = role;
-		this.company = company;
-		this.iban = iban;
 
 		const requiredFields = [
 			"firstname",
@@ -58,5 +56,12 @@ export default class User {
 		if (this.role === "seller" && (!this.company || !this.iban)) {
 			throw new Error("[ERROR] Missing required fields for seller");
 		}
+	}
+
+	verify(email, password) {
+		return (
+			this.email === email &&
+			bcrypt.compareSync(password, this.password)
+		);
 	}
 }
