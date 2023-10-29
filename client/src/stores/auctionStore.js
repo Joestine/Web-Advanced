@@ -13,17 +13,23 @@ export const searchedName = writable("");
 export const auctions = writable([]);
 
 const fetchAuctions = async () => {
+	const token = localStorage.getItem("token");
 	try {
-		const response = await fetch("http://localhost:3000/api/auctions");
+		const response = await fetch("http://localhost:3000/api/auctions?isActive=true", {
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		});
 		const data = await response.json();
 		return data;
 	} catch (error) {
 		console.log(error);
 	}
 };
+fetchAuctions().then((data) => auctions.set(data));
 
 const filterAuctions = (auctions, filters) => {
-	const {
+	const [
 		minPrice,
 		maxPrice,
 		selectedGroup,
@@ -33,14 +39,14 @@ const filterAuctions = (auctions, filters) => {
 		maleChecked,
 		femaleChecked,
 		searchedName,
-	} = filters;
+	] = filters;
 
 	return auctions.filter((auction) => {
-		const startBid = auction.bids[0] ? auction.bids.slice(-1)[0].amount : auction.startBid;
+		const minBid = auction.bids[0] ? auction.bids[auction.bids.length - 1].bid : auction.startBid;
 		const { group, region, age, gender, name } = auction.animal;
 
-		if (minPrice && startBid < minPrice) return false;
-		if (maxPrice && startBid > maxPrice) return false;
+		if (minPrice && minBid < minPrice) return false;
+		if (maxPrice && minBid > maxPrice) return false;
 		if (selectedGroup !== "all" && group !== selectedGroup) return false;
 		if (selectedRegion !== "all" && region !== selectedRegion) return false;
 		if (minAge && age < minAge) return false;
@@ -51,8 +57,6 @@ const filterAuctions = (auctions, filters) => {
 		return true;
 	});
 };
-
-fetchAuctions().then((data) => auctions.set(data));
 
 export const filteredAuctions = derived(
 	[
@@ -67,12 +71,5 @@ export const filteredAuctions = derived(
 		femaleChecked,
 		searchedName,
 	],
-	([auctionsData, ...filters]) => {
-		console.log(auctionsData);
-		console.log(...filters);
-		return filterAuctions(
-			auctionsData,
-			Object.fromEntries(filters.map((filter, i) => [Object.keys(filters)[i], filter]))
-		);
-	}
+	([auctionsData, ...filters]) => filterAuctions(auctionsData, filters)
 );

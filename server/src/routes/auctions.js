@@ -7,15 +7,15 @@ import isLoggedIn from "../middleware/isLoggedIn.js";
 const router = express.Router();
 
 router.get("/", isLoggedIn, async (req, res) => {
-	let auctions = controller.getAllAuctions();
-	const { isActive, priceUnder } = req.query;
 	try {
-		if (isActive) auctions = controller.filterAuctionsByActivity(auctions, escape(isActive));
+		let auctions = controller.getAllAuctions();
+		const { isActive, priceUnder } = req.query;
+		if (isActive) auctions = controller.filterAuctionsByActivity(auctions, isActive === "true");
 		if (priceUnder) auctions = controller.filterAuctionsByPrice(auctions, escape(priceUnder));
+		res.status(200).json(auctions);
 	} catch (error) {
 		res.status(400).json({ error: escape(error.message) });
 	}
-	res.status(200).json(auctions);
 });
 
 router.get("/:id", isLoggedIn, async (req, res) => {
@@ -31,6 +31,15 @@ router.post("/", isLoggedIn, async (req, res) => {
 	try {
 		const auction = controller.createAuction(req.body);
 		res.status(201).json(auction);
+	} catch (error) {
+		res.status(400).json({ error: escape(error.message) });
+	}
+});
+
+router.post("/:id/bids", isLoggedIn, async (req, res) => {
+	try {
+		controller.addBidToAuction(req.params.id, req.body, req.user);
+		res.status(201).json({ message: "Bid added successfully" });
 	} catch (error) {
 		res.status(400).json({ error: escape(error.message) });
 	}

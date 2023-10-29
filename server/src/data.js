@@ -1,4 +1,5 @@
 import Animal from "./models/Animal.js";
+import Bid from "./models/Bid.js";
 import User from "./models/User.js";
 import Auction from "./models/auction.js";
 
@@ -22,7 +23,7 @@ export function init() {
 			"1234AB",
 			"user@test.nl",
 			"test",
-			"buyer"
+			"user"
 		)
 	);
 	users.push(

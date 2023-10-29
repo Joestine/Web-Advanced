@@ -2,21 +2,7 @@ import bcrypt from "bcrypt";
 import { users } from "../data.js";
 
 export default class User {
-	constructor(
-		firstname,
-		prefix,
-		lastname,
-		address,
-		housenumber,
-		city,
-		province,
-		postal,
-		email,
-		password,
-		role,
-		company,
-		iban
-	) {
+	constructor(firstname, prefix, lastname, address, housenumber, city, province, postal, email, password, role) {
 		this.firstname = firstname;
 		this.prefix = prefix;
 		this.lastname = lastname;
@@ -48,20 +34,13 @@ export default class User {
 			}
 		}
 
-		const validRoles = ["seller", "buyer", "admin"];
+		const validRoles = ["user", "admin"];
 		if (!validRoles.includes(this.role)) {
 			throw new Error(`[ERROR] Invalid role: ${this.role}`);
-		}
-
-		if (this.role === "seller" && (!this.company || !this.iban)) {
-			throw new Error("[ERROR] Missing required fields for seller");
 		}
 	}
 
 	verify(email, password) {
-		return (
-			this.email === email &&
-			bcrypt.compareSync(password, this.password)
-		);
+		return this.email === email && bcrypt.compareSync(password, this.password);
 	}
 }

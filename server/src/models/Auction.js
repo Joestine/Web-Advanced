@@ -2,7 +2,6 @@ import { auctions } from "../data.js";
 
 export default class Auction {
 	constructor(startBid, startTime, endTime, animal, seller) {
-
 		this.bids = [];
 		this.startBid = startBid;
 		this.startTime = startTime;
@@ -39,11 +38,10 @@ export default class Auction {
 		if (startTime === endTime) {
 			throw new Error("[ERROR] Start time is the same as end time");
 		}
-
 	}
 
-	addBid(bid, buyer_id) {
+	addBid(bid) {
 		this.bids.push(bid);
-		this.highest_bidder = buyer_id;
+		this.highest_bidder = bid.user;
 	}
 }

@@ -12,6 +12,6 @@
         <h3 class="text-3xl font-bold underline mb-2">{auction.animal.name}</h3>
         <p class="text-lg">Soort: {auction.animal.species}</p>
         <p class="text-lg">Door: {auction.seller.firstname}</p>
-        <p class="text-lg">€{auction.bids[0] ? auction.bids.splice(-1) : auction.startBid}</p>
+        <p class="text-lg">€{auction.bids[0] ? auction.bids[auction.bids.length - 1].bid : auction.startBid}</p>
     </div>
 </a>

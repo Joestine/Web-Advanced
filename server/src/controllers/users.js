@@ -32,13 +32,23 @@ export function filterUsersByRole(role) {
 export function createUser(user) {
 	console.log("[SYSTEM]: Creating user...");
 	let newUser;
-
 	try {
-		newUser = new User(user);
+		newUser = new User(
+			user.firstname,
+			user.prefix,
+			user.lastname,
+			user.address,
+			user.housenumber,
+			user.city,
+			user.province,
+			user.postal,
+			user.email,
+			user.password,
+			user.role
+		);
 	} catch (error) {
 		throw new Error("[ERROR] Invalid user object");
 	}
-
 	users.push(newUser);
 	return newUser;
 }

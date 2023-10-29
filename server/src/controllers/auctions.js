@@ -1,4 +1,5 @@
 import { auctions } from "../data.js";
+import Bid from "../models/Bid.js";
 
 export function getAllAuctions() {
 	console.log("[SYSTEM]: Returning all auctions...");
@@ -18,15 +19,27 @@ export function filterAuctionsByActivity(auctions, isActive) {
 	if (typeof isActive !== "boolean") {
 		throw new Error("[ERROR] Invalid isActive parameter");
 	}
-	return auctions.filter((auction) => auction.isActive === isActive);
+	console.log(auctions);
+	return auctions.filter((auction) => auction.startTime < Date.now() && auction.endTime > Date.now());
 }
 
-export function filterAuctionsByPrice(priceUnder) {
-	console.log("[SYSTEM]: Filtering auctions by price...");
-	if (typeof priceUnder !== "number" || priceUnder < 0) {
-		throw new Error("[ERROR] Invalid price");
+export function filterAuctionsWithHighestBidder(auctions, user) {
+	console.log("[SYSTEM]: Filtering auctions with highest bidder...");
+	if (typeof user !== "object") {
+		throw new Error("[ERROR] Invalid user object");
 	}
-	return auctions.filter((auction) => auction.startBid <= priceUnder);
+	return auctions.filter((auction) => auction.highestBidder.id === user.id);
+}
+
+export function addBidToAuction(id, bid, user) {
+	console.log("[SYSTEM]: Adding bid to auction with id " + id + "...");
+	if (id < 0 || id >= auctions.length) {
+		throw new Error("[ERROR] Invalid auction ID");
+	}
+	if (typeof bid.bid !== "number" || bid.bid < 0) {
+		throw new Error("[ERROR] Invalid bid");
+	}
+	auctions[id].addBid(new Bid(bid.bid, { id: user.id, name: user.firstname }));
 }
 
 export function createAuction(auction) {
