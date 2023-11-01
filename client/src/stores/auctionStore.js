@@ -9,13 +9,15 @@ export const maxAge = writable("");
 export const maleChecked = writable(false);
 export const femaleChecked = writable(false);
 export const searchedName = writable("");
+export const won = writable(false);
 
 export const auctions = writable([]);
 
 const fetchAuctions = async () => {
 	const token = localStorage.getItem("token");
 	try {
-		const response = await fetch("http://localhost:3000/api/auctions?isActive=true", {
+		let response;
+		response = await fetch("http://localhost:3000/api/auctions", {
 			headers: {
 				Authorization: `Bearer ${token}`,
 			},
@@ -39,11 +41,13 @@ const filterAuctions = (auctions, filters) => {
 		maleChecked,
 		femaleChecked,
 		searchedName,
+		won,
 	] = filters;
 
 	return auctions.filter((auction) => {
 		const minBid = auction.bids[0] ? auction.bids[auction.bids.length - 1].bid : auction.startBid;
 		const { group, region, age, gender, name } = auction.animal;
+		console.log(auction);
 
 		if (minPrice && minBid < minPrice) return false;
 		if (maxPrice && minBid > maxPrice) return false;
@@ -54,6 +58,12 @@ const filterAuctions = (auctions, filters) => {
 		if (maleChecked && gender !== "M") return false;
 		if (femaleChecked && gender !== "V") return false;
 		if (searchedName && !name.toLowerCase().includes(searchedName.toLowerCase())) return false;
+		if (
+			won &&
+			+Date.now() < +new Date(auction.endTime) &&
+			auction.highest_bidder.id === localStorage.getItem("token")
+		)
+			return false;
 		return true;
 	});
 };

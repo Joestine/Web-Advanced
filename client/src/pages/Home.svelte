@@ -1,5 +1,6 @@
 <script>
 	import Auction from "../components/Auction.svelte";
+	import Button from "../components/Button.svelte";
 	import Filters from "../components/Filters.svelte";
 	import Header from "../components/Header.svelte";
 	import {
@@ -12,11 +13,10 @@
 		minPrice,
 		searchedName,
 		selectedGroup,
-		selectedRegion
+		selectedRegion,
 	} from '../stores/auctionStore';
 
     $: token = localStorage.getItem('token');
-
 
     const fetchGroupsAndRegions = async () => {
         try {
@@ -64,6 +64,13 @@
             </div>
         {:else}
             <p>Please log in to see the active auctions!</p>
+        {/if}
+        {#if token}
+            <div class="flex gap-4">
+                <Button text="Gewonnen Veilingen" handleClick=""></Button>
+                <Button text="Dier Toevoegen" handleClick=""></Button>
+                <Button text="Maak Veiling" handleClick=""></Button>
+            </div>
         {/if}
     </div>
 </section>

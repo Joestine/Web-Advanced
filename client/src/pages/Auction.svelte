@@ -70,7 +70,7 @@
                 <li><span class="font-bold">Regio:</span> {auctionInfo.animal.region}</li>
                 <li><span class="font-bold">Geslacht:</span> {auctionInfo.animal.gender}</li>
                 <li><span class="font-bold">Omschrijving:</span> {auctionInfo.animal.description}</li>
-                <li><span class="font-bold">Door:</span> {auctionInfo.seller.firstname}</li>
+                <li><span class="font-bold">Door:</span> {auctionInfo.seller.name}</li>
                 <li><span class="font-bold">Startprijs:</span> €{auctionInfo.startBid}</li>
             <li><Timer timeLeft={timeLeft} /></li>
         </ul>
@@ -80,7 +80,7 @@
             {#if auctionInfo.bids.length > 0}
                 <ul class="my-8 space-y-6">
                     {#each auctionInfo.bids.slice(-5).reverse() as bid}
-                        <li class="text-2xl"><span class="font-bold">€{bid.bid}</span> door {bid.user.firstname}</li>
+                        <li class="text-2xl"><span class="font-bold">€{bid.bid}</span> door {bid.user.name}</li>
                     {/each}
                 </ul>
             {:else}

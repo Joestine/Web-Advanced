@@ -9,9 +9,10 @@ const router = express.Router();
 router.get("/", isLoggedIn, async (req, res) => {
 	try {
 		let auctions = controller.getAllAuctions();
-		const { isActive, priceUnder } = req.query;
+		const { isActive, priceUnder, won } = req.query;
 		if (isActive) auctions = controller.filterAuctionsByActivity(auctions, isActive === "true");
 		if (priceUnder) auctions = controller.filterAuctionsByPrice(auctions, escape(priceUnder));
+		if (won) auctions = controller.filterAuctionsWithHighestBidder(auctions, req.user);
 		res.status(200).json(auctions);
 	} catch (error) {
 		res.status(400).json({ error: escape(error.message) });

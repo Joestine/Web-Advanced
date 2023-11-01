@@ -19,7 +19,6 @@ export function filterAuctionsByActivity(auctions, isActive) {
 	if (typeof isActive !== "boolean") {
 		throw new Error("[ERROR] Invalid isActive parameter");
 	}
-	console.log(auctions);
 	return auctions.filter((auction) => auction.startTime < Date.now() && auction.endTime > Date.now());
 }
 

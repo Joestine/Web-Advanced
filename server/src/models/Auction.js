@@ -7,7 +7,7 @@ export default class Auction {
 		this.startTime = startTime;
 		this.endTime = endTime;
 		this.animal = animal;
-		this.seller = seller;
+		this.seller = { name: seller.firstname, id: seller.id };
 		this.highest_bidder = null;
 		this.id = auctions.length;
 
