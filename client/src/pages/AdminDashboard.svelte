@@ -33,69 +33,74 @@
 	};
 </script>
 
-<Header />
+{#if $user.role !== "admin"}
+	<h1 class="text-2xl font-bold mb-4">Je mag deze pagina niet bekijken</h1>
+	<Button text="Go back" handleClick={() => router.redirect("/")} />
+{:else}
+	<Header />
 
-<div class="container mt-6 mx-auto px-4">
-	<h2 class="text-2xl font-bold mb-4">Users</h2>
-	<div class="overflow-x-auto">
-		<table class="min-w-full divide-y divide-gray-200">
-			<thead class="bg-gray-50">
-				<tr>
-					<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-					<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th
-					>
-					<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-						>Actions</th
-					>
-				</tr>
-			</thead>
-			<tbody class="bg-white divide-y divide-gray-200">
-				{#each $users as otherUser (otherUser.id)}
+	<div class="container mt-6 mx-auto px-4">
+		<h2 class="text-2xl font-bold mb-4">Users</h2>
+		<div class="overflow-x-auto">
+			<table class="min-w-full divide-y divide-gray-200">
+				<thead class="bg-gray-50">
 					<tr>
-						<td class="px-6 py-4 whitespace-nowrap">{otherUser.firstname} {otherUser.lastname}</td>
-						<td class="px-6 py-4 whitespace-nowrap">{otherUser.email}</td>
-						<td class="px-6 py-4 whitespace-nowrap">
-							<Button text="Edit" handleClick={() => toEditUser(otherUser.id)} />
-							{#if otherUser.id !== $user.id}
-								<Button text="Delete" handleClick={() => submitDeleteUser(otherUser.id)} />
-							{/if}
-						</td>
+						<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+						<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th
+						>
+						<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+							>Actions</th
+						>
 					</tr>
-				{/each}
-			</tbody>
-		</table>
-	</div>
+				</thead>
+				<tbody class="bg-white divide-y divide-gray-200">
+					{#each $users as otherUser (otherUser.id)}
+						<tr>
+							<td class="px-6 py-4 whitespace-nowrap">{otherUser.firstname} {otherUser.lastname}</td>
+							<td class="px-6 py-4 whitespace-nowrap">{otherUser.email}</td>
+							<td class="px-6 py-4 whitespace-nowrap">
+								<Button text="Edit" handleClick={() => toEditUser(otherUser.id)} />
+								{#if otherUser.id !== $user.id}
+									<Button text="Delete" handleClick={() => submitDeleteUser(otherUser.id)} />
+								{/if}
+							</td>
+						</tr>
+					{/each}
+				</tbody>
+			</table>
+		</div>
 
-	<h2 class="text-2xl font-bold mb-4 mt-8">Auctions</h2>
-	<div class="overflow-x-auto">
-		<table class="min-w-full divide-y divide-gray-200">
-			<thead class="bg-gray-50">
-				<tr>
-					<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-					<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-						>Animal</th
-					>
-					<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-						>Starting Bid</th
-					>
-					<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-						>Actions</th
-					>
-				</tr>
-			</thead>
-			<tbody class="bg-white divide-y divide-gray-200">
-				{#each $auctions as auction (auction.id)}
+		<h2 class="text-2xl font-bold mb-4 mt-8">Auctions</h2>
+		<div class="overflow-x-auto">
+			<table class="min-w-full divide-y divide-gray-200">
+				<thead class="bg-gray-50">
 					<tr>
-						<td class="px-6 py-4 whitespace-nowrap">{auction.id}</td>
-						<td class="px-6 py-4 whitespace-nowrap">{auction.animal.name}</td>
-						<td class="px-6 py-4 whitespace-nowrap">{auction.startBid}</td>
-						<td class="px-6 py-4 whitespace-nowrap">
-							<Button text="Edit" handleClick={() => toEditAuction(auction.id)} />
-							<Button text="Delete" handleClick={() => submitDeleteAuction(auction.id)} />
-						</td>
+						<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+						<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+							>Animal</th
+						>
+						<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+							>Starting Bid</th
+						>
+						<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+							>Actions</th
+						>
 					</tr>
-				{/each}
-			</tbody>
-		</table>
+				</thead>
+				<tbody class="bg-white divide-y divide-gray-200">
+					{#each $auctions as auction (auction.id)}
+						<tr>
+							<td class="px-6 py-4 whitespace-nowrap">{auction.id}</td>
+							<td class="px-6 py-4 whitespace-nowrap">{auction.animal.name}</td>
+							<td class="px-6 py-4 whitespace-nowrap">{auction.startBid}</td>
+							<td class="px-6 py-4 whitespace-nowrap">
+								<Button text="Edit" handleClick={() => toEditAuction(auction.id)} />
+								<Button text="Delete" handleClick={() => submitDeleteAuction(auction.id)} />
+							</td>
+						</tr>
+					{/each}
+				</tbody>
+			</table>
+		</div>
 	</div>
-</div>
+{/if}

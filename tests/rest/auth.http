@@ -1,0 +1,38 @@
+### Successful User Login - Good Weather
+POST {{protocol}}{{host}}:{{port}}/api/auth
+Content-Type: application/json
+
+{
+  "email": "user@test.nl",
+  "password": "test"
+}
+
+> {%
+    client.test("Status code is 200 and token is received", function() {
+        client.assert(response.status === 200, "Expected status code 200");
+    });
+%}
+
+### Invalid User Login - Bad Weather
+POST {{protocol}}{{host}}:{{port}}/api/auth
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "password": "wrong_password"
+}
+
+> {%
+    client.test("Status code is 401 for invalid credentials", function() {
+        client.assert(response.status === 401, "Expected status code 401 for invalid credentials");
+    });
+%}
+
+### Token Block Without Authorization Header - Bad Weather
+DELETE {{protocol}}{{host}}:{{port}}/api/auth
+
+> {%
+    client.test("Status code is 401 for missing Authorization header", function() {
+        client.assert(response.status === 401, "Expected status code 401 for missing Authorization header");
+    });
+%}

@@ -1,0 +1,227 @@
+### Get the token for the admin user
+POST {{protocol}}{{host}}:{{port}}/api/auth
+Content-Type: application/json
+Accept: application/json
+
+{
+  "email": "admin@test.nl",
+  "password": "test"
+}
+
+> {%
+    client.global.set("token", response.body.token);
+%}
+
+### Get all auctions with no filters - Good Weather
+GET {{protocol}}{{host}}:{{port}}/api/auctions
+Authorization: Bearer {{token}}
+
+> {%
+    client.test("Status code is 200", function() {
+        client.assert(response.status === 200, "Expected status code 200");
+    });
+%}
+
+### Get auctions won by a specific user - Good Weather
+GET {{protocol}}{{host}}:{{port}}/api/auctions/won/123
+Authorization: Bearer {{token}}
+
+> {%
+    client.test("Status code is 200", function() {
+        client.assert(response.status === 200, "Expected status code 200");
+    });
+%}
+
+### Create a new auction - Good Weather
+POST {{protocol}}{{host}}:{{port}}/api/auctions
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "startBid": 100,
+  "startTime": "2021-01-01T00:00:00.000Z",
+    "endTime": "2021-01-02T00:00:00.000Z",
+  "animal": {
+    "name": "Zorro de Zeester",
+    "species": "Zeester",
+    "group": "Vis",
+    "region": "Stille Oceaan",
+    "age": 3,
+    "gender": "M",
+    "description": "Zorro is een Zeester",
+    "ownerId": 1
+  },
+  "seller": {
+    "firstname": "Testadmin",
+    "prefix": null,
+    "lastname": "Testadmin",
+    "address": "Teststraat",
+    "housenumber": "1",
+    "city": "Teststad",
+    "province": "Testprovincie",
+    "postal": "1234AB",
+    "email": "admin@test.nl",
+    "password": "$2b$10$.MFVhGt/z66yZd8858XfeuomkcjnsDnJdkmBfyX5.tqY7j2co3qJ6",
+    "id": 1,
+    "role": "admin"
+  }
+}
+
+> {%
+    client.test("Status code is 201", function() {
+        client.assert(response.status === 201, "Expected status code 201");
+    });
+%}
+
+### Add a bid to an auction - Good Weather
+POST {{protocol}}{{host}}:{{port}}/api/auctions/1/bids
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "bid": 150
+}
+
+> {%
+    client.test("Status code is 201", function() {
+        client.assert(response.status === 201, "Expected status code 201");
+    });
+%}
+
+### Update an auction - Good Weather
+PUT {{protocol}}{{host}}:{{port}}/api/auctions/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "startBid": 200,
+  "startTime": "2021-01-01T00:00:00.000Z",
+  "endTime": "2021-01-02T00:00:00.000Z",
+  "animal": {
+    "name": "Zorro de Zeester",
+    "species": "Zeester",
+    "group": "Vis",
+    "region": "Stille Oceaan",
+    "age": 3,
+    "gender": "M",
+    "description": "Zorro is een Zeester",
+    "ownerId": 1
+  },
+  "seller": {
+    "firstname": "Testadmin",
+    "prefix": null,
+    "lastname": "Testadmin",
+    "address": "Teststraat",
+    "housenumber": "1",
+    "city": "Teststad",
+    "province": "Testprovincie",
+    "postal": "1234AB",
+    "email": "admin@test.nl",
+    "password": "$2b$10$.MFVhGt/z66yZd8858XfeuomkcjnsDnJdkmBfyX5.tqY7j2co3qJ6",
+    "id": 1,
+    "role": "admin"
+  }
+}
+
+> {%
+    client.test("Status code is 200", function() {
+        client.assert(response.status === 200, "Expected status code 200");
+    });
+%}
+
+### Delete a bid from an auction - Good Weather
+DELETE {{protocol}}{{host}}:{{port}}/api/auctions/1/bids
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "bid": {
+    "bid": 150
+  }
+}
+
+> {%
+    client.test("Status code is 200", function() {
+        client.assert(response.status === 200, "Expected status code 200");
+    });
+%}
+
+### Get an auction by an invalid ID - Bad Weather
+GET {{protocol}}{{host}}:{{port}}/api/auctions/-1
+Authorization: Bearer {{token}}
+
+> {%
+    client.test("Status code is 404", function() {
+        client.assert(response.status === 404, "Expected status code 404");
+    });
+%}
+
+### Create a new auction with incomplete data - Bad Weather
+POST {{protocol}}{{host}}:{{port}}/api/auctions
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{}
+
+> {%
+    client.test("Status code is 400", function() {
+        client.assert(response.status === 400, "Expected status code 400");
+    });
+%}
+
+### Add a bid to a non-existent auction - Bad Weather
+POST {{protocol}}{{host}}:{{port}}/api/auctions/-1/bids
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "bid": 150
+}
+
+> {%
+    client.test("Status code is 400", function() {
+        client.assert(response.status === 400, "Expected status code 400");
+    });
+%}
+
+### Update an auction without admin rights - Bad Weather
+PUT {{protocol}}{{host}}:{{port}}/api/auctions/1
+Content-Type: application/json
+
+{
+  "title": "Updated Auction",
+  "price": 200,
+  "isActive": false
+}
+
+> {%
+    client.test("Status code is 401", function() {
+        client.assert(response.status === 401, "Expected status code 401");
+    });
+%}
+
+### Delete an auction without admin rights - Bad Weather
+DELETE {{protocol}}{{host}}:{{port}}/api/auctions/1
+
+> {%
+    client.test("Status code is 401", function() {
+        client.assert(response.status === 401, "Expected status code 401");
+    });
+%}
+
+### Delete a bid from an auction with invalid bid data - Bad Weather
+DELETE {{protocol}}{{host}}:{{port}}/api/auctions/1/bids
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "bid": {
+    "bid": "invalid_bid_data"
+  }
+}
+
+> {%
+    client.test("Status code is 400", function() {
+        client.assert(response.status === 400, "Expected status code 400");
+    });
+%}

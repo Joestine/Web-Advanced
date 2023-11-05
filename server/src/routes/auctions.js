@@ -9,9 +9,8 @@ const router = express.Router();
 router.get("/", isLoggedIn, async (req, res) => {
 	try {
 		let auctions = controller.getAllAuctions();
-		const { isActive, priceUnder } = req.query;
+		const { isActive } = req.query;
 		if (isActive) auctions = controller.filterAuctionsByActivity(auctions, isActive === "true");
-		if (priceUnder) auctions = controller.filterAuctionsByPrice(auctions, escape(priceUnder));
 		res.status(200).json(auctions);
 	} catch (error) {
 		res.status(400).json({ error: escape(error.message) });
@@ -19,7 +18,12 @@ router.get("/", isLoggedIn, async (req, res) => {
 });
 
 router.get("/:id", isLoggedIn, async (req, res) => {
-	const auction = controller.getAuctionById(req.params.id);
+	let auction;
+	try {
+		auction = controller.getAuctionById(req.params.id);
+	} catch (error) {
+		return res.status(404).json({ error: escape("Auction not found") });
+	}
 	if (!auction) {
 		res.status(404).json({ error: escape("Auction not found") });
 	} else {
@@ -49,6 +53,7 @@ router.post("/", isLoggedIn, async (req, res) => {
 router.post("/:id/bids", isLoggedIn, async (req, res) => {
 	try {
 		controller.addBidToAuction(req.params.id, req.body, req.user);
+
 		res.status(201).json({ message: "Bid added successfully" });
 	} catch (error) {
 		res.status(400).json({ error: escape(error.message) });

@@ -21,9 +21,11 @@ router.post("/", async (req, res) => {
 
 router.delete("/", (req, res) => {
 	const header = req.headers.authorization;
-	const token = header.split(" ")[1];
-	blockList.push(token);
-	res.json({ message: "Token has been blocked" });
+	if (!header) {
+		return res.status(401).json({ message: "Missing authorization header" });
+	}
+	blockList.push(header.token);
+	res.status(200).json({ message: "Successfully logged out" });
 });
 
 export default router;

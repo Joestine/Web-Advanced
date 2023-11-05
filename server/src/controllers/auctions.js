@@ -62,9 +62,7 @@ export function createAuction(auction) {
 
 	try {
 		newAuction = new Auction(auction.startBid, auction.startTime, auction.endTime, auction.animal, auction.seller);
-		console.log(newAuction);
 	} catch (error) {
-		console.log(error);
 		throw new Error("[ERROR] Invalid auction object");
 	}
 

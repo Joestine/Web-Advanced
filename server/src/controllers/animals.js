@@ -8,10 +8,10 @@ export function getAllAnimals() {
 
 export function getAnimalById(id) {
 	console.log("[SYSTEM]: Returning animal with id " + id + "...");
-	if (id < 0 || !animals.find((animal) => animal.id === id)) {
+	if (id < 0 || !animals.find((animal) => animal.id === parseInt(id))) {
 		throw new Error("[ERROR] Invalid animal ID");
 	}
-	return animals.find((animal) => animal.id === id);
+	return animals.find((animal) => animal.id === parseInt(id));
 }
 
 export function filterAnimalsByOwner(animals, ownerId) {
@@ -37,12 +37,12 @@ export function createAnimal(animal) {
 			animal.description,
 			animal.ownerId
 		);
-		console.log(newAnimal);
 	} catch (error) {
 		throw new Error("[ERROR] Invalid animal object");
 	}
 
 	animals.push(newAnimal);
+	return newAnimal;
 }
 
 export function updateAnimal(id, animal) {

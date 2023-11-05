@@ -1,11 +1,10 @@
 # Users
 
-Place the credentials for at least two users in the table below. There should be at least one administrator and one regular user.
+Hier vind je een overzicht van alle gebruikers die je kunt gebruiken om in te loggen.
 
-
-| Username | Password | Account type |
-|----------|--------|------------|
-| `admin`  | | |
-| `user`   | | |
+| Email           | Wachtwoord | Account type |
+|-----------------|------------|--------------|
+| `admin@test.nl` | `test`     | `admin`      |
+| `user@test.nl`  | `test`     | `user`       |
 
 

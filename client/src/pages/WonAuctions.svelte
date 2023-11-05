@@ -53,40 +53,44 @@
 		}
 	}
 </script>
+{#if $user.id === null}
+	<h1 class="text-2xl font-bold mb-4">Je mag deze pagina niet bekijken</h1>
+	<Button text="Go back" handleClick={() => router.redirect("/")} />
+{:else}
+	<Header />
 
-<Header />
+	<main>
+		<section class="flex mt-24">
+			<Filter />
 
-<main>
-	<section class="flex mt-24">
-		<Filter />
-
-		<div class="flex flex-col gap-8 items-center w-2/3">
-			{#if loading}
-				<p>Loading...</p>
-			{:else}
-				<input
-					type="text"
-					placeholder="Zoeken..."
-					class="rounded-2xl border-2 h-12 p-2 w-2/3"
-					bind:value={$searchTerm}
-				/>
-				{#if localStorage.getItem("token")}
-					<div class="grid grid-cols-4 gap-6 w-2/3 h-2/3 overflow-y-scroll">
-						{#each filteredAuctions as auction}
-							<Auction {auction} />
-						{/each}
-					</div>
+			<div class="flex flex-col gap-8 items-center w-2/3">
+				{#if loading}
+					<p>Loading...</p>
 				{:else}
-					<p>Please log in to see the active auctions!</p>
+					<input
+						type="text"
+						placeholder="Zoeken..."
+						class="rounded-2xl border-2 h-12 p-2 w-2/3"
+						bind:value={$searchTerm}
+					/>
+					{#if localStorage.getItem("token")}
+						<div class="grid grid-cols-4 gap-6 w-2/3 h-2/3 overflow-y-scroll">
+							{#each filteredAuctions as auction}
+								<Auction {auction} />
+							{/each}
+						</div>
+					{:else}
+						<p>Please log in to see the active auctions!</p>
+					{/if}
+					{#if localStorage.getItem("token")}
+						<div class="flex gap-4">
+							<Button text="Lopende Veilingen" handleClick={toHome} />
+							<Button text="Dier Toevoegen" handleClick="" />
+							<Button text="Maak Veiling" handleClick="" />
+						</div>
+					{/if}
 				{/if}
-				{#if localStorage.getItem("token")}
-					<div class="flex gap-4">
-						<Button text="Lopende Veilingen" handleClick={toHome} />
-						<Button text="Dier Toevoegen" handleClick="" />
-						<Button text="Maak Veiling" handleClick="" />
-					</div>
-				{/if}
-			{/if}
-		</div>
-	</section>
-</main>
+			</div>
+		</section>
+	</main>
+{/if}

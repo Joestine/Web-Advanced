@@ -69,31 +69,27 @@
 		<Filter />
 
 		<div class="flex flex-col gap-8 items-center w-2/3">
-			{#if loading}
-				<p>Loading...</p>
+			<input
+				type="text"
+				placeholder="Zoeken..."
+				class="rounded-2xl border-2 h-12 p-2 w-2/3"
+				bind:value={$searchTerm}
+			/>
+			{#if $user.id !== null}
+				<div class="grid grid-cols-4 gap-6 w-2/3 h-3/5 overflow-y-scroll">
+					{#each filteredAuctions as auction}
+						<Auction {auction} />
+					{/each}
+				</div>
 			{:else}
-				<input
-					type="text"
-					placeholder="Zoeken..."
-					class="rounded-2xl border-2 h-12 p-2 w-2/3"
-					bind:value={$searchTerm}
-				/>
-				{#if $user.id !== null}
-					<div class="grid grid-cols-4 gap-6 w-2/3 h-3/5 overflow-y-scroll">
-						{#each filteredAuctions as auction}
-							<Auction {auction} />
-						{/each}
-					</div>
-				{:else}
-					<p>Please log in to see the active auctions!</p>
-				{/if}
-				{#if $user.id !== null}
-					<div class="flex gap-4">
-						<Button text="Gewonnen Veilingen" handleClick={toWonAuctionsPage} />
-						<Button text="Dier Toevoegen" handleClick={toCreateAnimalPage} />
-						<Button text="Maak Veiling" handleClick={toCreateAuctionPage} />
-					</div>
-				{/if}
+				<p>Please log in to see the active auctions!</p>
+			{/if}
+			{#if $user.id !== null}
+				<div class="flex gap-4">
+					<Button text="Gewonnen Veilingen" handleClick={toWonAuctionsPage} />
+					<Button text="Dier Toevoegen" handleClick={toCreateAnimalPage} />
+					<Button text="Maak Veiling" handleClick={toCreateAuctionPage} />
+				</div>
 			{/if}
 		</div>
 	</section>

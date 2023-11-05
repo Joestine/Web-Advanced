@@ -1,70 +1,121 @@
-### Get all animals
+### Get the token for the admin user
+POST {{protocol}}{{host}}:{{port}}/api/auth
+Content-Type: application/json
+Accept: application/json
+
+{
+  "email": "admin@test.nl",
+  "password": "test"
+}
+
+> {%
+    client.global.set("token", response.body.token);
+%}
+
+### Get all animals without filters - Good Weather
 GET {{protocol}}{{host}}:{{port}}/api/animals
+Authorization: Bearer {{token}}
 
 > {%
-client.test("Status code is 200", function() {
-    client.assert(response.status === 200, "Response status is not 200");
-});
+    client.test("Status code is 200", function() {
+        client.assert(response.status === 200, "Expected status code 200");
+    });
 %}
 
-### Get animals filtered by species
-GET {{protocol}}{{host}}:{{port}}/api/animals?species=Aap
+### Get all regions - Good Weather
+GET {{protocol}}{{host}}:{{port}}/api/animals/regions
+Authorization: Bearer {{token}}
 
 > {%
-client.test("Status code is 200", function() {
-    client.assert(response.status === 200, "Response status is not 200");
-});
+    client.test("Status code is 200", function() {
+        client.assert(response.status === 200, "Expected status code 200");
+    });
 %}
 
-### Get animals filtered by group
-GET {{protocol}}{{host}}:{{port}}/animals?group=Mammals
+### Get all groups - Good Weather
+GET {{protocol}}{{host}}:{{port}}/api/animals/groups
+Authorization: Bearer {{token}}
 
-### Get animals filtered by region
-GET {{protocol}}{{host}}:{{port}}/animals?region=Africa
+> {%
+    client.test("Status code is 200", function() {
+        client.assert(response.status === 200, "Expected status code 200");
+    });
+%}
 
-### Get animals filtered by age
-GET {{protocol}}{{host}}:{{port}}/animals?age=5
+### Get animal by id - Good Weather
+GET {{protocol}}{{host}}:{{port}}/api/animals/0
+Authorization: Bearer {{token}}
 
-### Get animals filtered by gender
-GET {{protocol}}{{host}}:{{port}}/animals?gender=Male
+> {%
+    client.test("Status code is 200", function() {
+        client.assert(response.status === 200, "Expected status code 200");
+    });
+%}
 
-### Get animals filtered by owner
-GET {{protocol}}{{host}}:{{port}}/animals?ownerId=123
-
-### Get all regions
-GET {{protocol}}{{host}}:{{port}}/animals/regions
-
-### Get all groups
-GET {{protocol}}{{host}}:{{port}}/animals/groups
-
-### Get animal by id
-GET {{protocol}}{{host}}:{{port}}/animals/1
-
-### Create a new animal
-POST {{protocol}}{{host}}:{{port}}/animals
+### Create a new animal - Good Weather (Assuming user is logged in and is a user)
+POST {{protocol}}{{host}}:{{port}}/api/animals
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
-  "species": "Tiger",
-  "group": "Mammals",
-  "region": "Asia",
+  "name": "Zorro de Zeester",
+  "species": "Zeester",
+  "group": "Vis",
+  "region": "Stille Oceaan",
   "age": 3,
-  "gender": "Female",
-  "ownerId": 456
+  "gender": "M",
+  "description": "Zorro is een Zeester",
+  "ownerId": 1
 }
 
-### Update an existing animal
-PUT {{protocol}}{{host}}:{{port}}/animals/1
+> {%
+    client.test("Status code is 201", function() {
+        client.assert(response.status === 201, "Expected status code 201");
+    });
+%}
+
+### Get animals filtered by owner with wrong ownerId - Bad Weather
+GET {{protocol}}{{host}}:{{port}}/api/animals?ownerId=-1
+Authorization: Bearer {{token}}
+
+> {%
+    client.test("Status code is 400", function() {
+        client.assert(response.status === 400, "Expected status code 400");
+    });
+%}
+
+### Get animal by an invalid id - Bad Weather
+GET {{protocol}}{{host}}:{{port}}/api/animals/-1
+Authorization: Bearer {{token}}
+
+> {%
+    client.test("Status code is 404", function() {
+        client.assert(response.status === 404, "Expected status code 404");
+    });
+%}
+
+
+### Get animal by id without being logged in - Bad Weather
+GET {{protocol}}{{host}}:{{port}}/api/animals/-1
+
+> {%
+    client.test("Status code is 401", function() {
+        client.assert(response.status === 401, "Expected status code 401");
+    });
+%}
+
+### Create a new animal with incomplete data - Bad Weather
+POST {{protocol}}{{host}}:{{port}}/api/animals
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
-  "species": "Lion",
-  "group": "Mammals",
-  "region": "Africa",
-  "age": 5,
-  "gender": "Male",
-  "ownerId": 789
+  "name": "New Animal"
 }
 
-### Delete an existing animal
-DELETE {{protocol}}{{host}}:{{port}}/animals/1
+> {%
+    client.test("Status code is 400", function() {
+        client.assert(response.status === 400, "Expected status code 400");
+    });
+%}
+
