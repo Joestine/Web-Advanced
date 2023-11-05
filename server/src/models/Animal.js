@@ -1,6 +1,6 @@
-import { animals } from "../data.js";
-
 export default class Animal {
+	static nextAnimalId = 0;
+
 	constructor(name, species, group, region, age, gender, description, ownerId) {
 		if (!name || !species || !group || !region || !age || !gender) {
 			throw new Error("Missing required fields");
@@ -20,7 +20,6 @@ export default class Animal {
 		if (typeof age !== "number" || age < 0) {
 			throw new Error("Invalid age");
 		}
-
 		this.name = name;
 		this.species = species;
 		this.group = group;
@@ -29,6 +28,6 @@ export default class Animal {
 		this.gender = gender;
 		this.description = description;
 		this.ownerId = ownerId;
-		this.id = animals.length;
+		this.id = Animal.nextAnimalId++;
 	}
 }

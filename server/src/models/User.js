@@ -1,7 +1,8 @@
 import bcrypt from "bcrypt";
-import { users } from "../data.js";
 
 export default class User {
+	static nextUserId = 0;
+
 	constructor(firstname, prefix, lastname, address, housenumber, city, province, postal, email, password, role) {
 		this.firstname = firstname;
 		this.prefix = prefix;
@@ -13,7 +14,7 @@ export default class User {
 		this.postal = postal;
 		this.email = email;
 		this.password = bcrypt.hashSync(password, 10);
-		this.id = users.length;
+		this.id = User.nextUserId++;
 		this.role = role;
 
 		const requiredFields = [
@@ -41,6 +42,7 @@ export default class User {
 	}
 
 	verify(email, password) {
+		console.log("[SYSTEM]: Verifying user...");
 		return this.email === email && bcrypt.compareSync(password, this.password);
 	}
 }

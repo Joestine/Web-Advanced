@@ -1,6 +1,6 @@
-import { auctions } from "../data.js";
-
 export default class Auction {
+	static nextAuctionId = 0;
+
 	constructor(startBid, startTime, endTime, animal, seller) {
 		this.bids = [];
 		this.startBid = startBid;
@@ -8,8 +8,8 @@ export default class Auction {
 		this.endTime = endTime;
 		this.animal = animal;
 		this.seller = { name: seller.firstname, id: seller.id };
-		this.highest_bidder = null;
-		this.id = auctions.length;
+		this.highestBidder = null;
+		this.id = Auction.nextAuctionId++;
 
 		const requiredFields = ["startBid", "startTime", "endTime", "animal", "seller"];
 		for (const field of requiredFields) {
@@ -42,6 +42,6 @@ export default class Auction {
 
 	addBid(bid) {
 		this.bids.push(bid);
-		this.highest_bidder = bid.user;
+		this.highestBidder = bid.user;
 	}
 }

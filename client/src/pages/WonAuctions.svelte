@@ -1,7 +1,7 @@
 <script>
 	import router from "page";
 	import { onMount } from "svelte";
-	import { getAllActiveAuctions } from "../api/auctionApi.js";
+	import { getAllWonAuctions } from "../api/auctionApi.js";
 	import Auction from "../components/Auction.svelte";
 	import Button from "../components/Button.svelte";
 	import Filter from "../components/Filter.svelte";
@@ -14,21 +14,13 @@
 	let loading = true;
 	let filteredAuctions = [];
 
-	const toWonAuctionsPage = () => {
-		router.redirect("/won");
-	};
-
-	const toCreateAnimalPage = () => {
-		router.redirect("/addAnimal");
-	};
-
-	const toCreateAuctionPage = () => {
-		router.redirect("/createAuction");
+	const toHome = () => {
+		router.redirect("/");
 	};
 
 	onMount(async () => {
 		try {
-			auctions.set(await getAllActiveAuctions());
+			auctions.set(await getAllWonAuctions($user.id));
 			loading = false;
 		} catch (error) {
 			console.log(error);
@@ -78,8 +70,8 @@
 					class="rounded-2xl border-2 h-12 p-2 w-2/3"
 					bind:value={$searchTerm}
 				/>
-				{#if $user.id !== null}
-					<div class="grid grid-cols-4 gap-6 w-2/3 h-3/5 overflow-y-scroll">
+				{#if localStorage.getItem("token")}
+					<div class="grid grid-cols-4 gap-6 w-2/3 h-2/3 overflow-y-scroll">
 						{#each filteredAuctions as auction}
 							<Auction {auction} />
 						{/each}
@@ -87,11 +79,11 @@
 				{:else}
 					<p>Please log in to see the active auctions!</p>
 				{/if}
-				{#if $user.id !== null}
+				{#if localStorage.getItem("token")}
 					<div class="flex gap-4">
-						<Button text="Gewonnen Veilingen" handleClick={toWonAuctionsPage} />
-						<Button text="Dier Toevoegen" handleClick={toCreateAnimalPage} />
-						<Button text="Maak Veiling" handleClick={toCreateAuctionPage} />
+						<Button text="Lopende Veilingen" handleClick={toHome} />
+						<Button text="Dier Toevoegen" handleClick="" />
+						<Button text="Maak Veiling" handleClick="" />
 					</div>
 				{/if}
 			{/if}

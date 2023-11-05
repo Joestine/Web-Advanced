@@ -11,12 +11,12 @@ router.get("/", isLoggedIn, async (req, res) => {
 		let animals = controller.getAllAnimals();
 		const { species, group, region, age, gender, ownerId } = req.query;
 
-		if (species) animals = controller.filterAnimalsBySpecies(escape(species));
-		if (group) animals = controller.filterAnimalsByGroup(escape(group));
-		if (region) animals = controller.filterAnimalsByRegion(escape(region));
-		if (age) animals = controller.filterAnimalsByAge(escape(age));
-		if (gender) animals = controller.filterAnimalsByGender(escape(gender));
-		if (ownerId) animals = controller.filterAnimalsByOwner(escape(ownerId));
+		if (species) animals = controller.filterAnimalsBySpecies(animals, escape(species));
+		if (group) animals = controller.filterAnimalsByGroup(animals, escape(group));
+		if (region) animals = controller.filterAnimalsByRegion(animals, escape(region));
+		if (age) animals = controller.filterAnimalsByAge(animals, escape(age));
+		if (gender) animals = controller.filterAnimalsByGender(animals, escape(gender));
+		if (ownerId) animals = controller.filterAnimalsByOwner(animals, escape(ownerId));
 
 		if (animals.length === 0) {
 			res.status(404).json({ error: escape("[ERROR] No animals found") });

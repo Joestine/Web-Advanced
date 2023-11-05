@@ -1,5 +1,5 @@
 import express from "express";
-import { users } from "../data.js";
+import { blockList, users } from "../data.js";
 const router = express.Router();
 
 import dotenv from "dotenv";
@@ -16,7 +16,14 @@ router.post("/", async (req, res) => {
 	}
 	const token = jwt.sign({ id: user.id, role: user.role, firstname: user.firstname }, process.env.JWT_SECRET);
 
-	res.json({ token });
+	res.json({ token: token, user: user });
+});
+
+router.delete("/", (req, res) => {
+	const header = req.headers.authorization;
+	const token = header.split(" ")[1];
+	blockList.push(token);
+	res.json({ message: "Token has been blocked" });
 });
 
 export default router;

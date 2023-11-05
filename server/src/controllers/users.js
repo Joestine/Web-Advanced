@@ -8,10 +8,10 @@ export function getAllUsers() {
 
 export function getUserById(id) {
 	console.log("[SYSTEM]: Returning user with id " + id + "...");
-	if (id < 0 || id >= users.length) {
+	if (id < 0 || !users.find((user) => user.id === parseInt(id))) {
 		throw new Error("[ERROR] Invalid user ID");
 	}
-	return users[id];
+	return users.find((user) => user.id === parseInt(id));
 }
 
 export function filterUsersByRole(role) {
@@ -55,24 +55,34 @@ export function createUser(user) {
 
 export function updateUser(id, user) {
 	console.log("[SYSTEM]: Updating user with id " + id + "...");
-	if (id < 0 || id >= users.length) {
+	if (id < 0 || !users.find((user) => user.id === parseInt(id))) {
 		throw new Error("[ERROR] Invalid user ID");
 	}
 
-	const updatedUser = new User(user);
+	const updatedUser = new User(
+		user.firstname,
+		user.prefix,
+		user.lastname,
+		user.address,
+		user.housenumber,
+		user.city,
+		user.province,
+		user.postal,
+		user.email,
+		user.password,
+		user.role
+	);
 
-	if (!updatedUser.isValid()) {
-		throw new Error("[ERROR] Invalid user object");
-	}
-
-	users[id] = updatedUser;
+	const userToUpdate = users.find((user) => user.id === parseInt(id));
+	Object.assign(userToUpdate, updatedUser);
 	return updatedUser;
 }
 
 export function deleteUser(id) {
 	console.log("[SYSTEM]: Deleting user with id " + id + "...");
-	if (id < 0 || id >= users.length) {
+	if (id < 0 || !users.find((user) => user.id === parseInt(id))) {
 		throw new Error("[ERROR] Invalid user ID");
 	}
-	users.splice(id, 1);
+	const index = users.findIndex((user) => user.id === parseInt(id));
+	users.splice(index, 1);
 }

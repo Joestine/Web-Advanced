@@ -9,10 +9,9 @@ const router = express.Router();
 router.get("/", isLoggedIn, async (req, res) => {
 	try {
 		let auctions = controller.getAllAuctions();
-		const { isActive, priceUnder, won } = req.query;
+		const { isActive, priceUnder } = req.query;
 		if (isActive) auctions = controller.filterAuctionsByActivity(auctions, isActive === "true");
 		if (priceUnder) auctions = controller.filterAuctionsByPrice(auctions, escape(priceUnder));
-		if (won) auctions = controller.filterAuctionsWithHighestBidder(auctions, req.user);
 		res.status(200).json(auctions);
 	} catch (error) {
 		res.status(400).json({ error: escape(error.message) });
@@ -25,6 +24,16 @@ router.get("/:id", isLoggedIn, async (req, res) => {
 		res.status(404).json({ error: escape("Auction not found") });
 	} else {
 		res.status(200).json(auction);
+	}
+});
+
+router.get("/won/:userId", isLoggedIn, async (req, res) => {
+	try {
+		let auctions = controller.getAllAuctions();
+		auctions = controller.filterWonAuctions(auctions, parseInt(req.params.userId));
+		res.status(200).json(auctions);
+	} catch (error) {
+		res.status(400).json({ error: escape(error.message) });
 	}
 });
 
@@ -46,10 +55,28 @@ router.post("/:id/bids", isLoggedIn, async (req, res) => {
 	}
 });
 
+router.put("/:id", [isLoggedIn, isAdmin], async (req, res) => {
+	try {
+		const auction = controller.updateAuction(req.params.id, req.body);
+		res.status(200).json(auction);
+	} catch (error) {
+		res.status(400).json({ error: escape(error.message) });
+	}
+});
+
 router.delete("/:id", [isLoggedIn, isAdmin], async (req, res) => {
 	try {
 		const auction = controller.deleteAuction(req.params.id);
 		res.status(200).json(auction);
+	} catch (error) {
+		res.status(400).json({ error: escape(error.message) });
+	}
+});
+
+router.delete("/:id/bids/", isLoggedIn, async (req, res) => {
+	try {
+		controller.deleteBidFromAuction(req.params.id, req.body.bid.bid, req.user);
+		res.status(200).json({ message: "Bid deleted successfully" });
 	} catch (error) {
 		res.status(400).json({ error: escape(error.message) });
 	}
