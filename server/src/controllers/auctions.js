@@ -121,4 +121,5 @@ export function deleteBidFromAuction(id, amount, user) {
 		throw new Error("Invalid user");
 	}
 	auction.bids.splice(bidIndex, 1);
+	auction.highestBidder = auction.bids.length > 0 ? auction.bids[auction.bids.length - 1].user : null;
 }

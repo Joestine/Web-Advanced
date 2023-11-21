@@ -76,9 +76,6 @@ export function init() {
 	wonAuction.addBid(new Bid(100, users[0]));
 	auctions.push(wonAuction);
 
-	let almostWonAuction = new Auction(600, Date.now(), Date.now() + 60000, animals[5], users[1]);
-	auctions.push(almostWonAuction);
-
 	groups.push("Zoogdier");
 	groups.push("Knaagdier");
 	groups.push("Reptiel");

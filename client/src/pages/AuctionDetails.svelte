@@ -96,7 +96,9 @@
 				<li><span class="font-bold">Omschrijving:</span> {auctionInfo.animal.description}</li>
 				<li><span class="font-bold">Door:</span> {auctionInfo.seller.name}</li>
 				<li><span class="font-bold">Startprijs:</span> €{auctionInfo.startBid}</li>
-				<li><Timer {timeLeft} /></li>
+				{#if timeLeft > 0}
+					<li><Timer {timeLeft} /></li>
+				{/if}
 			</ul>
 
 			<div class="w-1/3 mt-16 text-right">
@@ -106,7 +108,7 @@
 						{#each auctionInfo.bids.slice(-5).reverse() as bid}
 							<li class="text-2xl">
 								<span class="font-bold">€{bid.bid}</span> door {bid.user.name}
-								{#if $user.id === bid.user.id}
+								{#if $user.id === bid.user.id && timeLeft > 0}
 									<Button
 										text="Verwijderen"
 										handleClick={() => {
@@ -120,12 +122,14 @@
 				{:else}
 					<p class="text-2xl text-green-600 my-8">Er zijn nog geen biedingen geplaatst, wees de eerste!</p>
 				{/if}
+				{#if timeLeft > 0}
 				<input
 					type="number"
 					class="border border-gray-400 p-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
 					bind:value={bid}
 				/>
 				<Button text="Bieden" handleClick={placeBid} />
+				{/if}
 
 				{#if $user.role === "admin"}
 					<Button text="Verwijderen" handleClick={submitDelete} />
